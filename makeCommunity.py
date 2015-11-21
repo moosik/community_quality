@@ -39,7 +39,7 @@ def fixPath(inputPath):
 # The sting can be delimited by whatever character, however
 def createCommunityDictionary(line, delim):
     # Remove end of the line character if it is present
-    if line[len(line) - 1] != '\n':
+    if line[len(line) - 1] == '\n':
         line = line.strip("\n")
     # Obtain names of the communities from the header
     lineFields = line.split(delim)
@@ -49,7 +49,7 @@ def createCommunityDictionary(line, delim):
     # Each element will also be a dictionary
     for el in range(len(communityNames)):
         communityDictionary[communityNames[el]] = dict()
-    return communityDictionary, communityNames
+    return communityNames, communityDictionary
 
 
 # Split the contents of the file into dictionaries
