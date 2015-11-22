@@ -4,6 +4,8 @@ import sys
 
 # Module definitions
 
+# Module definitions
+
 # Check whether the path has back slash at the end and add it if doesn't have it
 def fixPath(inputPath):
     if inputPath[len(inputPath) - 1] != '/':
@@ -15,7 +17,7 @@ def fixPath(inputPath):
 # The sting can be delimited by whatever character, however
 def createCommunityDictionary(line, delim):
     # Remove end of the line character if it is present
-    if line[len(line) - 1] != '\n':
+    if line[len(line) - 1] == '\n':
         line = line.strip("\n")
     # Obtain names of the communities from the header
     lineFields = line.split(delim)
@@ -25,7 +27,7 @@ def createCommunityDictionary(line, delim):
     # Each element will also be a dictionary
     for el in range(len(communityNames)):
         communityDictionary[communityNames[el]] = dict()
-    return communityDictionary, communityNames
+    return communityNames, communityDictionary
 
 
 # Split the contents of the file into dictionaries
@@ -55,6 +57,8 @@ def writeDics(communityDictionary, path):
         communityFile.close()
 
 
+
+
 # Wrapper function that uses all functions above to
 # read the input file and create community files from the input file
 # it returns the number of nodes (actual is -1) which were put into communities
@@ -77,13 +81,12 @@ def makeCommunity(inputFile, outputDirectory):
 
 
 # Function to permute the dictionary contents
-def permuteDictionary(inputDic):
+# def permuteDictionary(inputDic):
 
 
 # Create the original community files and return the dictionary of dictionaries with the node number
 
-nodeID, dicDics = makeCommunity(sys.argv[1], sys.argv[2])
+nodeID, dicDics = makeCommunity("rosmap_test_train.txt", ".")
 
+# How can we find the length of all values for each subdictionary
 
-tempdic = dict()
-for key in communityDictionary.keys():
