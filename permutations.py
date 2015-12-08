@@ -123,7 +123,7 @@ def permute_dics(input_file, result_dir, shuffle_dir):
 
 # Execute compiled java with given files
 def execute_java(java_file, discovered_comm, ground_truth):
-    java_class,ext = os.path.splitext(java_file)
+    java_class, ext = os.path.splitext(java_file)
     cmd = ['java', java_class, discovered_comm, ground_truth]
     return subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
@@ -150,9 +150,7 @@ def loop_through_files(input_files_dir, output_file):
     for i in range(0, len(files_to_process)):
         for j in range(0, len(files_to_process)):
             # Run CommunityQuality
-            java_run_out = execute_java('communityQuality_java/CommunityQuality.java', os.path.join(input_files_dir,
-                                                                              files_to_process[i]),
-                                        os.path.join(input_files_dir, files_to_process[j]))
+            java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
 
             # Process the obtained results
             # Obtain the string - result of the command substitution
@@ -185,9 +183,9 @@ def loop_through_files(input_files_dir, output_file):
 
 
 
-result = permute_dics("rosmap_test_train.txt", "./non_permuted", "./permuted")
+result = permute_dics("data/rosmap_test_train.txt", "results/results", "results/permuted")
 # Do calculations on the non-permuted results
-loop_through_files("non_permuted", "results.txt")
+loop_through_files("results/results", "results/results/results.txt")
 # Do calculations on the permuted results
-loop_through_files("permuted", "permuted_results.txt")
+loop_through_files("results/permuted", "results/permuted/permuted_results.txt")
 
