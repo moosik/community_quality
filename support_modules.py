@@ -102,46 +102,59 @@ def extract_measures(input_list, el):
 
 
 # Wrapping function to run CommunityQuality.java on all pairs of files found in the input_files_dir
-def loop_through_files(input_files_dir, output_file):
+def community_quality_extract(input_files_dir):
     files_to_process = os.listdir(input_files_dir)
+    vi = []
+    nmi = []
+    f_measure = []
+    nvd = []
+    ri = []
+    ari = []
+    ji = []
+    compared_pairs = []
+    # Loop to run each possible combinations of discovered and ground truth communities
+    for i in range(0, len(files_to_process)):
+        for j in range(0, len(files_to_process)):
+            # Saved the names of the pair of files being compared
+            compared_pairs.append(files_to_process[i]+files_to_process[j])
+            # Run CommunityQuality
+            java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
+            # Process the obtained results
+            # Obtain the string - result of the command substitution
+            stats_string = java_run_out.stdout.read()
+            # Substitute the first 2 '\n' with ', '
+            stats_string = stats_string.replace("\n", ", ", 2)
+            # Remove '\n' at the end of the string:
+            stats_string = stats_string.replace("\n", "")
+            # Split the string into a list by ', '
+            stats_list = stats_string.split(", ")
+            # Extract the statistics
+            vi.append(extract_measures(stats_list, 0))
+            nmi.append(extract_measures(stats_list, 1))
+            f_measure.append(extract_measures(stats_list, 2))
+            nvd.append(extract_measures(stats_list, 3))
+            ri.append(extract_measures(stats_list, 4))
+            ari.append(extract_measures(stats_list, 5))
+            ji.append(extract_measures(stats_list, 6))
+    all_results = [compared_pairs, vi, nmi, f_measure, nvd, ri, ari, ji]
+    return all_results
+
+
+
+# Module to write the statistics obtained from CommunityQuality.java to a file
+def write_stats2file(results2write, output_file_name):
     # Open file to write the results of the computation
-    f = open(output_file, "w")
+    f = open(output_file_name, "w")
     # Prepare the header, write to the output file
     result_header = ["Discovered Communities", "Ground Truth", "VI", "NMI", "F-measure", "NVD", "RI", "ARI", "JI"]
     result_header = "\t".join(result_header)
     end_line = "\n"
     f.write(result_header + end_line)
-    # Loop to run each possible combinations of discovered and ground truth communities
-    for i in range(0, len(files_to_process)):
-        for j in range(0, len(files_to_process)):
-            # Run CommunityQuality
-            java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
-
-            # Process the obtained results
-            # Obtain the string - result of the command substitution
-            stats_string = java_run_out.stdout.read()
-
-            # Substitute the first 2 '\n' with ', '
-            stats_string = stats_string.replace("\n", ", ", 2)
-
-            # Remove '\n' at the end of the string:
-            stats_string = stats_string.replace("\n", "")
-
-            # Split the string into a list by ', '
-            stats_list = stats_string.split(", ")
-
-            # Extract the statistics
-            VI = extract_measures(stats_list, 0)
-            NMI = extract_measures(stats_list, 1)
-            F = extract_measures(stats_list, 2)
-            NVD = extract_measures(stats_list, 3)
-            RI = extract_measures(stats_list, 4)
-            ARI = extract_measures(stats_list, 5)
-            JI = extract_measures(stats_list, 6)
-
-            # Write the result of the comparison to the file, first 2 elements are the names of the files
-            # being compared
-            final_list = [files_to_process[i], files_to_process[j], VI, NMI, F, NVD, RI, ARI, JI]
-            final_list = "\t".join(final_list)
-            f.write(final_list +  end_line)
+    # Get the length of the first element in results2write so we can loop through all of them
+    how_many = len(results2write[0])
+    # Write the results to a file
+    for i in range(0, how_many):
+        line2write = [item[i] for item in results2write]
+        line2write = "\t".join(line2write)
+        f.write(line2write + end_line)
     f.close()

@@ -42,4 +42,8 @@ write_dics(results[1], sys.argv[2])
 
 # After the files were created we can run CommunityQuality.java
 
-loop_through_files(sys.argv[2], sys.argv[3])
+stats = community_quality_extract(sys.argv[2])
+
+# Write the results to a file
+
+write_stats2file(stats, sys.argv[3])
