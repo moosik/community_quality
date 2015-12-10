@@ -6,6 +6,15 @@ import errno
 #######################################################################################
 ## Modules related to creating community files in preparation for running the java code
 
+# Check if the directory already exists
+def make_sure_path_exists(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+
 # Check whether the path has back slash at the end and add it if doesn't have it
 def fix_path(path):
     if path[len(path) - 1] != '/':
@@ -158,3 +167,5 @@ def write_stats2file(results2write, output_file_name):
         line2write = "\t".join(line2write)
         f.write(line2write + end_line)
     f.close()
+
+
