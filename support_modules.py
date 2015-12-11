@@ -43,12 +43,9 @@ def create_community_dictionary(line, delim):
 # will either have the list of nodes or the community ids. This will useful to set up
 # independent permutations of each partition
 
-def read_file2lists(input_file):
-    f = open(input_file, 'r')
-    # get the header
-    header = f.readline()
+def read_file2lists(input_file_handler, file_header):
     # Figure out how many sublists will be in a list
-    header = header.strip("\n")
+    header = file_header.strip("\n")
     header_fields = header.split("\t")
     communities_list = []
     # create a list of lists. number of sublists equal to the number
@@ -57,7 +54,7 @@ def read_file2lists(input_file):
         communities_list.append([])
     # Next fill this empty list with node ids and the community ids:
     i = 1
-    for lines in f.readlines():
+    for lines in input_file_handler.readlines():
         single_line = lines.strip("\n")
         single_line_fields = single_line.split("\t")
         # add the node id as a counter
@@ -65,25 +62,22 @@ def read_file2lists(input_file):
         for j in range(1, len(single_line_fields)):
             communities_list[j].append(single_line_fields[j])
         i = i + 1
-    f.close()
     return communities_list
 
 
 # Split the contents of the file into dictionaries
-def split2dics(f, community_names, community_dictionary):
-    node_id = 1
-    for lines in f.readlines():
-        # some line fixing: remove \n, split by tab
-        single_line = lines.strip("\n")
-        single_line_fields = single_line.split("\t")
-        for el in range(len(community_names)):
-            if single_line_fields[el + 1] in community_dictionary[community_names[el]]:
-                community_dictionary[community_names[el]][single_line_fields[el + 1]].append(node_id)
+# file_list is the output from read_file2lists: list of lists where every element contains a column from the file.
+# the first column is the numeric sequence serving as node ids.
+def split2dics(file_list, community_names, community_dictionary):
+    # all lists in the file_list are of the same size, take the first one to
+    # create and iteration
+    for i in range(0, len(file_list[0])):
+        for j in range(0, len(community_names)):
+            if file_list[j + 1][i] in community_dictionary[community_names[j]]:
+                community_dictionary[community_names[j]][file_list[j+1][i]].append(file_list[0][i])
             else:
-                community_dictionary[community_names[el]][single_line_fields[el + 1]] = [node_id]
-        # Advance line counter
-        node_id = node_id + 1
-    return node_id, community_dictionary
+                community_dictionary[community_names[j]][file_list[j+1][i]] = [file_list[0][i]]
+    return i, community_dictionary
 
 
 
@@ -114,8 +108,10 @@ def make_community(input_file):
     header = f.readline()
     # Get community names and create empty community dictionary for all columns in the input file:
     com_names, empty_community_dic = create_community_dictionary(header, "\t")
+    # Read the rest of the file into list of lists. Each list is a column of the input file:
+    file_list = read_file2lists(f, header)
     # Get the final node count, filled community dictionary
-    node, community_dictionary = split2dics(f, com_names, empty_community_dic)
+    node, community_dictionary = split2dics(file_list, com_names, empty_community_dic)
     # Write the dictionaries into files:
     # write_dics(community_dictionary, result_dir)
     # close the input file
