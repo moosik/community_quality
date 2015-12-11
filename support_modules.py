@@ -38,6 +38,37 @@ def create_community_dictionary(line, delim):
     return community_names, community_dictionary
 
 
+
+# Function to read the entire input file into list of lists. Each element of the list
+# will either have the list of nodes or the community ids. This will useful to set up
+# independent permutations of each partition
+
+def read_file2lists(input_file):
+    f = open(input_file, 'r')
+    # get the header
+    header = f.readline()
+    # Figure out how many sublists will be in a list
+    header = header.strip("\n")
+    header_fields = header.split("\t")
+    communities_list = []
+    # create a list of lists. number of sublists equal to the number
+    # of elements in the header (the extra list is for storing the node ids)
+    for i in range(0, len(header_fields)):
+        communities_list.append([])
+    # Next fill this empty list with node ids and the community ids:
+    i = 1
+    for lines in f.readlines():
+        single_line = lines.strip("\n")
+        single_line_fields = single_line.split("\t")
+        # add the node id as a counter
+        communities_list[0].append(i)
+        for j in range(1, len(single_line_fields)):
+            communities_list[j].append(single_line_fields[j])
+        i = i + 1
+    f.close()
+    return communities_list
+
+
 # Split the contents of the file into dictionaries
 def split2dics(f, community_names, community_dictionary):
     node_id = 1
@@ -90,6 +121,13 @@ def make_community(input_file):
     # close the input file
     f.close()
     return node, community_dictionary
+
+
+
+
+
+
+
 
 
 ######################################################################################
