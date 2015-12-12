@@ -157,9 +157,9 @@ def community_quality_extract(input_files_dir):
     compared_pairs = []
     # Loop to run each possible combinations of discovered and ground truth communities
     for i in range(0, len(files_to_process)):
-        for j in range(0, len(files_to_process)):
+        for j in range(i+1, len(files_to_process)):
             # Saved the names of the pair of files being compared
-            compared_pairs.append(files_to_process[i]+'\t'+files_to_process[j])
+            compared_pairs.append(files_to_process[i]+'-'+files_to_process[j])
             # Run CommunityQuality
             java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
             # Process the obtained results
