@@ -9,32 +9,21 @@ import random
 def permute_dics(input_file, shuffle_dir):
     # Create a result_dir
     make_sure_path_exists(shuffle_dir)
-    # Get the community dictionaries
-    node_id, community_dictionary = make_community(input_file)
-    # Set up empty dictionary to store the permuted results
-    permuted_dictionary = dict()
-    # Shuffle the list only once for all dictionaries
-    random_nodes = range(1, node_id)
-    random.shuffle(random_nodes)
-    for large_dic_key in community_dictionary:
-        sub_dic = community_dictionary[large_dic_key]
-        # Create an empty dictionary like tempDic, which will hold shuffled elements
-        shuffled_sub_dic = dict()
-        for sub_dic_key in sub_dic:
-            shuffled_sub_dic[sub_dic_key] = []
-        # Fill the shuffledDict with the elements of the list of nodes. Each dictionary value will be
-        # a list and it will have the same length as in the original dictionary
-        start_list_pos = 0
-        for sub_dic_key in sub_dic:
-            list_len = len(sub_dic[sub_dic_key])
-            shuffled_sub_dic[sub_dic_key].extend(random_nodes[start_list_pos: (start_list_pos + list_len)])
-            # change start_list_pos to advance through the list of random_nodes
-            start_list_pos = start_list_pos + list_len
-        # Add the new shuffled subdictionary to the large dictionary container of all of them
-        permuted_dictionary[large_dic_key] = shuffled_sub_dic
-    # Write the resulting shuffled dictionaries to files in the directory with all shuffled results
+    f = open(input_file, 'r')
+    # get the header
+    header = f.readline()
+    # Get community names and create empty community dictionary for all columns in the input file:
+    com_names, empty_community_dic = create_community_dictionary(header, "\t")
+    # Read the rest of the file into list of lists. Each list is a column of the input file:
+    file_list = read_file2lists(f, header)
+    # Now we need to shuffle the sublists (except the first sublist with the list of nodes)
+    for item in range(1, len(file_list)):
+        random.shuffle(file_list[item])
+    # Next split to a dictionary of dictionaries
+    node, permuted_dictionary = split2dics(file_list, com_names, empty_community_dic)
+    # Write the shuffled dictionary to files
     write_dics(permuted_dictionary, shuffle_dir, shuffled=True)
-    return permuted_dictionary
+
 
 
 def dir_loop(input_file, shuffle_dir):
