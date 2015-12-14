@@ -22,7 +22,7 @@ def permute_dics(input_file, shuffle_dir):
     # Next split to a dictionary of dictionaries
     node, permuted_dictionary = split2dics(file_list, com_names, empty_community_dic)
     # Write the shuffled dictionary to files
-    write_dics(permuted_dictionary, shuffle_dir, shuffled=True)
+    write_dics(permuted_dictionary, shuffle_dir)
 
 
 ## Loop to create random permutations and process the results for each

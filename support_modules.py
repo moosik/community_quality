@@ -82,21 +82,14 @@ def split2dics(file_list, community_names, community_dictionary):
 
 
 # Write the dictionary of dictionaries to files to create the final community files:
-def write_dics(community_dictionary, path, shuffled=False):
+def write_dics(community_dictionary, path):
     path = fix_path(path)
     for key in community_dictionary.keys():
-        if shuffled:
-            community_file = open(path + key + "_" + "permuted", "w")
-            for subkey in community_dictionary[key].keys():
-                line2write = (str(w) for w in community_dictionary[key][subkey])
-                community_file.write(" ".join(line2write) + "\n")
-            community_file.close()
-        else:
-            community_file = open(path + key, "w")
-            for subkey in community_dictionary[key].keys():
-                line2write = (str(w) for w in community_dictionary[key][subkey])
-                community_file.write(" ".join(line2write) + "\n")
-            community_file.close()
+        community_file = open(path + key, "w")
+        for subkey in community_dictionary[key].keys():
+            line2write = (str(w) for w in community_dictionary[key][subkey])
+            community_file.write(" ".join(line2write) + "\n")
+        community_file.close()
 
 
 # Function to create community files and write them to a file.
@@ -147,19 +140,20 @@ def extract_measures(input_list, el):
 # Wrapping function to run CommunityQuality.java on all pairs of files found in the input_files_dir
 def community_quality_extract(input_files_dir):
     files_to_process = os.listdir(input_files_dir)
-    vi = []
-    nmi = []
-    f_measure = []
-    nvd = []
-    ri = []
-    ari = []
-    ji = []
-    compared_pairs = []
+    # vi = []
+    # nmi = []
+    # f_measure = []
+    # nvd = []
+    # ri = []
+    # ari = []
+    # ji = []
+    # compared_pairs = []
+    all_results = dict()
     # Loop to run each possible combinations of discovered and ground truth communities
     for i in range(0, len(files_to_process)):
         for j in range(i+1, len(files_to_process)):
             # Saved the names of the pair of files being compared
-            compared_pairs.append(files_to_process[i]+'-'+files_to_process[j])
+            # compared_pairs.append(files_to_process[i]+'-'+files_to_process[j])
             # Run CommunityQuality
             java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
             # Process the obtained results
@@ -172,14 +166,14 @@ def community_quality_extract(input_files_dir):
             # Split the string into a list by ', '
             stats_list = stats_string.split(", ")
             # Extract the statistics
-            vi.append(extract_measures(stats_list, 0))
-            nmi.append(extract_measures(stats_list, 1))
-            f_measure.append(extract_measures(stats_list, 2))
-            nvd.append(extract_measures(stats_list, 3))
-            ri.append(extract_measures(stats_list, 4))
-            ari.append(extract_measures(stats_list, 5))
-            ji.append(extract_measures(stats_list, 6))
-    all_results = [compared_pairs, vi, nmi, f_measure, nvd, ri, ari, ji]
+            vi = extract_measures(stats_list, 0)
+            nmi = extract_measures(stats_list, 1)
+            f_measure = extract_measures(stats_list, 2)
+            nvd = extract_measures(stats_list, 3)
+            ri = extract_measures(stats_list, 4)
+            ari = extract_measures(stats_list, 5)
+            ji = extract_measures(stats_list, 6)
+            all_results[files_to_process[i]+'-'+files_to_process[j]] = [vi, nmi, f_measure, nvd, ri, ari, ji]
     return all_results
 
 
@@ -194,12 +188,14 @@ def write_stats2file(results2write, output_file_name):
     end_line = "\n"
     f.write(result_header + end_line)
     # Get the length of the first element in results2write so we can loop through all of them
-    how_many = len(results2write[0])
+    # how_many = len(results2write[0])
     # Write the results to a file
-    for i in range(0, how_many):
-        line2write = [item[i] for item in results2write]
-        line2write = "\t".join(line2write)
-        f.write(line2write + end_line)
+    # for i in range(0, how_many):
+    #     line2write = [item[i] for item in results2write]
+    #     line2write = "\t".join(line2write)
+    #     f.write(line2write + end_line)
+    for key,value in results2write.items():
+        f.write(key.replace("-", "\t") + "\t" + "\t".join([str(round(float(w), 4)) for w in value]) + end_line)
     f.close()
 
 
