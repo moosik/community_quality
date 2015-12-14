@@ -199,3 +199,26 @@ def write_stats2file(results2write, output_file_name):
     f.close()
 
 
+
+# Write the permuted results to file by appending them
+def write_permuted_stats2files(results2write, shuffled_dir):
+    shuffled_dir = fix_path(shuffled_dir)
+    for key in results2write:
+        f = open(shuffled_dir+key, "w")
+        result_header = ["VI", "NMI", "F-measure", "NVD", "RI", "ARI", "JI"]
+        result_header = "\t".join(result_header)
+        end_line = "\n"
+        f.write(result_header + end_line)
+        for item in results2write[key]:
+            f.write("\t".join([str(round(float(w), 4)) for w in item]) + end_line)
+        f.close()
+
+# Use Pushbullet to notify about the results
+import json
+import os.path
+
+def return_push_api_key():
+    with open(os.path.expanduser("~/.rpushbullet.json")) as data_file:
+        data = json.load(data_file)
+    return data["key"]
+

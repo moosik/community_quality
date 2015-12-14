@@ -2,6 +2,7 @@
 
 from support_modules import *
 import random
+from pushbullet import Pushbullet
 
 
 # Calls make_community to create original community files
@@ -36,53 +37,18 @@ def dir_loop(input_file, shuffle_dir):
         shuffle_res = community_quality_extract(shuffle_dir)
         for key in shuffle_res.keys():
             if key not in all_shuffle.keys():
-                all_shuffle.setdefault(key, shuffle_res[key])
+                all_shuffle.setdefault(key, [shuffle_res[key]])
             else:
                 all_shuffle[key].append(shuffle_res[key])
-
     return all_shuffle
-
-
-#### Transform the obtain results into a dictionary of dictionaries
-# def perm_results2files(loop_results):
-#     statistics = ["VI", "NMI", "F", "NVD", "RI", "ARI", "JI"]
-#     # loop_results[0][0] give the list of pairs of files being compared
-#     for i in range(0, len(loop_results[0][0])):
-#         # Create an empty dictionary to store the results
-#         perm_results = dict()
-#         for el in range(len(statistics)):
-#             perm_results[statistics[el]] = []
-#         # Write the results of all permutations into corresponding lists for each statistic
-#         perm_results["VI"].extend([item[1][i] for item in loop_results])
-#         perm_results["NMI"].extend([item[2][i] for item in loop_results])
-#         perm_results["F"].extend([item[3][i] for item in loop_results])
-#         perm_results["NVD"].extend([item[4][i] for item in loop_results])
-#         perm_results["RI"].extend([item[5][i] for item in loop_results])
-#         perm_results["ARI"].extend([item[6][i] for item in loop_results])
-#         perm_results["JI"].extend([item[7][i] for item in loop_results])
-#         # Write the dictionary of dictionaries to a file in a wide format
-#         # where the first element is the name of the statistic and the rest
-#         # are the tab delimited results of the permutations
-#         result_file = open(loop_results[0][0][i], "w")
-#         for key in perm_results:
-#             # convert numbers to strings so they can be written to a file
-#             line2write = (str(w) for w in perm_results[key])
-#             result_file.write(key + "\t" + "\t".join(line2write) + "\n")
-#         result_file.close()
-
-
-
 
 
 
 
 temp = dir_loop("data/rosmap_test_train.txt", "shuffle_test1")
-#perm_results2files(temp)
-
-from pushbullet import Pushbullet
-
-pb = Pushbullet('FBwNPNCUvAwiSV2n6cqjfN69Pdei7DjU')
-push = pb.push_note("This is the title", "This is the body")
+write_permuted_stats2files(temp, "shuffle_test1")
+pb = Pushbullet(return_push_api_key())
+push = pb.push_note("Permutations", "finished working on the directory")
 
 
 
