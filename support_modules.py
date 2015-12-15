@@ -140,6 +140,7 @@ def extract_measures(input_list, el):
 # Wrapping function to run CommunityQuality.java on all pairs of files found in the input_files_dir
 def community_quality_extract(input_files_dir):
     files_to_process = os.listdir(input_files_dir)
+    files_to_process = [f for f in files_to_process if 'answer_' not in f]
     # vi = []
     # nmi = []
     # f_measure = []
@@ -204,7 +205,7 @@ def write_stats2file(results2write, output_file_name):
 def write_permuted_stats2files(results2write, shuffled_dir):
     shuffled_dir = fix_path(shuffled_dir)
     for key in results2write:
-        f = open(shuffled_dir+key, "w")
+        f = open(shuffled_dir+"answer_"+key, "w")
         result_header = ["VI", "NMI", "F-measure", "NVD", "RI", "ARI", "JI"]
         result_header = "\t".join(result_header)
         end_line = "\n"

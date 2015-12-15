@@ -32,7 +32,7 @@ def dir_loop(input_file, shuffle_dir):
     # Create an empty dictionary to collect the shuffled results
     all_shuffle = dict()
     for i in range(0, 5):
-        random.seed(i)
+        random.seed()
         permute_dics(input_file, shuffle_dir)
         shuffle_res = community_quality_extract(shuffle_dir)
         for key in shuffle_res.keys():
@@ -43,10 +43,28 @@ def dir_loop(input_file, shuffle_dir):
     return all_shuffle
 
 
+# function to be used with multiple workers
+# x will be passed to workers
+def dirs_loop(x):
+    # Create directory name
+    shuffle_dir_name = "shuffle_test" + str(x)
+    temp = dir_loop("data/rosmap_test_train.txt", shuffle_dir_name)
+    write_permuted_stats2files(temp, shuffle_dir_name)
 
 
-temp = dir_loop("data/rosmap_test_train.txt", "shuffle_test1")
-write_permuted_stats2files(temp, "shuffle_test1")
+
+
+from multiprocessing import Pool
+
+
+if __name__ == '__main__':
+    p = Pool(2)
+    p.map(dirs_loop, [1, 2, 3])
+
+
+#temp = dir_loop("data/rosmap_test_train.txt", "shuffle_test1")
+#write_permuted_stats2files(temp, "shuffle_test1")
+
 pb = Pushbullet(return_push_api_key())
 push = pb.push_note("Permutations", "finished working on the directory")
 
