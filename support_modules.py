@@ -211,7 +211,7 @@ def write_permuted_stats2files(results2write, shuffled_dir):
         end_line = "\n"
         f.write(result_header + end_line)
         for item in results2write[key]:
-            f.write("\t".join([str(round(float(w), 4)) for w in item]) + end_line)
+            f.write("\t".join([str(round(float(w), 6)) for w in item]) + end_line)
         f.close()
 
 # Use Pushbullet to notify about the results

@@ -31,7 +31,7 @@ def permute_dics(input_file, shuffle_dir):
 def dir_loop(input_file, shuffle_dir):
     # Create an empty dictionary to collect the shuffled results
     all_shuffle = dict()
-    for i in range(0, 5):
+    for i in range(0, 10):
         random.seed()
         permute_dics(input_file, shuffle_dir)
         shuffle_res = community_quality_extract(shuffle_dir)
@@ -55,17 +55,18 @@ def dirs_loop(x):
 
 
 
-
+from multiprocessing import Pool
+from pushbullet import Pushbullet
 
 if __name__ == '__main__':
-    p = Pool(2)
-    p.map(dirs_loop, [1, 2, 3])
+    p = Pool(18)
+    p.map(dirs_loop, range(1,11))
 
 
 #temp = dir_loop("data/rosmap_test_train.txt", "shuffle_test1")
 #write_permuted_stats2files(temp, "shuffle_test1")
 
-from multiprocessing import Pool
+
 pb = Pushbullet(return_push_api_key())
 pb.push_note("Permutations", "finished working on the directory")
 
