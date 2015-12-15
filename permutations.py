@@ -50,12 +50,13 @@ def dirs_loop(x):
     shuffle_dir_name = "shuffle_test" + str(x)
     temp = dir_loop("data/rosmap_test_train.txt", shuffle_dir_name)
     write_permuted_stats2files(temp, shuffle_dir_name)
+    pb.push_note("Permutations", "finished working on the directory %d"%(x))
 
 
 
 
 from multiprocessing import Pool
-
+pb = Pushbullet(return_push_api_key())
 
 if __name__ == '__main__':
     p = Pool(2)
@@ -65,8 +66,8 @@ if __name__ == '__main__':
 #temp = dir_loop("data/rosmap_test_train.txt", "shuffle_test1")
 #write_permuted_stats2files(temp, "shuffle_test1")
 
-pb = Pushbullet(return_push_api_key())
-push = pb.push_note("Permutations", "finished working on the directory")
+
+
 
 
 
