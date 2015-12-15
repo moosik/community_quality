@@ -60,7 +60,7 @@ from pushbullet import Pushbullet
 
 if __name__ == '__main__':
     p = Pool(18)
-    p.map(dirs_loop, range(1,11))
+    p.map(dirs_loop, range(1,101))
 
 
 #temp = dir_loop("data/rosmap_test_train.txt", "shuffle_test1")
