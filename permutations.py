@@ -31,7 +31,7 @@ def permute_dics(input_file, shuffle_dir):
 def dir_loop(input_file, shuffle_dir):
     # Create an empty dictionary to collect the shuffled results
     all_shuffle = dict()
-    for i in range(0, 10):
+    for i in range(0, 100):
         random.seed()
         permute_dics(input_file, shuffle_dir)
         shuffle_res = community_quality_extract(shuffle_dir)
