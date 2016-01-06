@@ -32,18 +32,26 @@ from support_modules import *
 import sys
 
 
-# This creates dictionary of communities for each clustering
-results = make_community(sys.argv[1])
-# Write the dictionary of dictionaries to a directory as separate files in a format
-# used by CommunityQuality.java
-
-write_dics(results[1], sys.argv[2])
 
 
+def oldStuff():
+    # This creates dictionary of communities for each clustering
+    results = make_community(sys.argv[1])
+    # Write the dictionary of dictionaries to a directory as separate files in a format
+    # used by CommunityQuality.java
+
+    write_dics(results[1], sys.argv[2])
+
+
+
+def runQualityExtractOnDirectory(directory, outputdirectory = None):
 # After the files were created we can run CommunityQuality.java
 
-stats = community_quality_extract(sys.argv[2])
+    stats = community_quality_extract(directory)
+    
+    # Write the results to a file
 
-# Write the results to a file
-
-write_stats2file(stats, sys.argv[3])
+    if outputdirectory == None:
+        outputdirectory = directory
+    
+    write_stats2file(stats, outputdirectory)

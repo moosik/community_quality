@@ -95,7 +95,7 @@ def makeCommunity(inputFile, outputDirectory):
     f.close()
 
 
-makeCommunity(sys.argv[1], sys.argv[2])
+#makeCommunity(sys.argv[1], sys.argv[2])
 
 
 

@@ -157,6 +157,9 @@ def community_quality_extract(input_files_dir):
             # compared_pairs.append(files_to_process[i]+'-'+files_to_process[j])
             # Run CommunityQuality
             java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
+
+            print 'java)runout', java_run_out.stdout.read()
+            
             # Process the obtained results
             # Obtain the string - result of the command substitution
             stats_string = java_run_out.stdout.read()
@@ -167,6 +170,7 @@ def community_quality_extract(input_files_dir):
             # Split the string into a list by ', '
             stats_list = stats_string.split(", ")
             # Extract the statistics
+            
             vi = extract_measures(stats_list, 0)
             nmi = extract_measures(stats_list, 1)
             f_measure = extract_measures(stats_list, 2)
