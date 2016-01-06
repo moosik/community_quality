@@ -21,7 +21,11 @@ def main():
     if args.chris:
         makeCommunity(args, logger)
     logger.info('makeCommunity complete. Beginning work on directory')
-    CommunityQuality.runQualityExtractOnDirectory(args.communityDirectory)
+    results_directory = os.path.join(args.communityDirectory+'_results')
+    if os.path.isdir(results_directory):
+        shutil.rmtree(results_directory)
+    os.makedirs(results_directory)
+    CommunityQuality.runQualityExtractOnDirectory(args.communityDirectory, os.path.join(results_directory,'results.txt'))
 
     
 
@@ -30,6 +34,8 @@ def makeCommunity(args, logger):
         shutil.rmtree(args.communityDirectory)
 
     os.makedirs(args.communityDirectory)
+    
+    
 
     CommunityQuality.makeCommunity(args.chris, args.communityDirectory)
 

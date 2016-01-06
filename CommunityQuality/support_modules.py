@@ -126,7 +126,10 @@ def make_community(input_file):
 # Execute compiled java with given files
 def execute_java(java_file, discovered_comm, ground_truth):
     java_class, ext = os.path.splitext(java_file)
-    cmd = ['java', java_class, discovered_comm, ground_truth]
+    java_class_path = '-cp'
+    java_class_path_value = './java'
+    cmd = ['java', java_class_path,java_class_path_value,java_class, discovered_comm, ground_truth]
+    #print cmd
     return subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 
@@ -158,8 +161,7 @@ def community_quality_extract(input_files_dir):
             # Run CommunityQuality
             java_run_out = execute_java('CommunityQuality.java', os.path.join(input_files_dir, files_to_process[i]), os.path.join(input_files_dir, files_to_process[j]))
 
-            print 'java)runout', java_run_out.stdout.read()
-            
+                       
             # Process the obtained results
             # Obtain the string - result of the command substitution
             stats_string = java_run_out.stdout.read()
